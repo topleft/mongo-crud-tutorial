@@ -99,8 +99,82 @@ Cut and paste this into you index.html:
 
 ```
 
-Now in the terminal, in the root of the project directory run 'nodemon'.
+Now in the terminal, in the root of the project directory run: 
+'npm start' 
 
 If everything is setup correctly you should see this:
 
-img of express page
+** img of express page
+
+### Set Up MongoDB with Mongoose
+
+> branch third-mongodb
+
+Start by installing Mongo and Mongoose:
+
+`npm install mongodb -g`
+
+`npm install mongoose --save`
+
+Have a look at the package.json file. We now have mongoose in our dependencies.
+
+Lets look at the MongoDB through our terminal.
+In the command line type `sudo mongod`, then  enter you password. This will start the MongoDB daemon running. Now open a new tab and type `mongo`. This is the command line interface for mongoDB. Enter the command `show dbs`. This will show any databases that you have created. If you are using mongo for the first time it should be !?!?!?!?!.
+
+
+Next add a new file, 'database.js' to the root directory.
+
+In database.js add the following code:
+
+```
+// bring in mongoose and grab Schema constructor
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
+
+// create new Schema, setting keys and value types
+var itemSchema = new Schema ({
+	name: String,
+	type: String
+});
+
+// create a model, which is a Mongo collection, which is akin to a SQL table
+var Item = mongoose.model('items', itemSchema);
+
+// set up the connection to the local database, if it doesn't exist yet one will be created automatically
+mongoose.connect('mongodb://localhost/mongo-item');
+
+// make the Item Schema available to other files
+module.exports = Item;
+
+
+```
+Possible schema field value types:
+
+* String
+* Number
+* Date
+* Buffer
+* Boolean
+* Mixed
+* Objectid
+* Array
+
+http://mongoosejs.com/docs/schematypes.html
+
+
+talk about ObjectId at some point
+
+### CRUD Routes
+
+
+
+
+
+
+
+
+
+
+
+
