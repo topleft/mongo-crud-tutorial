@@ -8,7 +8,6 @@
 
 >branch first-generator
 
-
 ├── app.js
 ├── bin
 │   └── www
@@ -217,7 +216,7 @@ router.get('/items', function(req, res, next) {
 
 There is a TON going on in there and if you are new to routes, it is really intimidating. I broke it down it down somewhat in the comments, but we can dig deeper. 
 
-After we call `router.get` we define the URL path, in this case `/items`. Our app will use this 'location' or 'address' to utilize the `GET` functionallity of the app.
+After we call `router.get` we define the URL path, in this case `/items`. Our app will use this 'path' to utilize the `GET` functionallity of the app.
 
 Let me show you what I mean with that 'httpie' we installed earlier. In the terminal fire up the database using `sudo mongod`, and also the server using `npm start`. Now run:
 
@@ -234,7 +233,7 @@ image httpie-get-no-items
 You can see in the second line `HTTP/1.1 200 OK`. This means our route was successful and that the logic in our route was executed. You can confirm that this logic was correct becuase it returned "There are no Items in the database." in 'json' format. We'll come back and test this some more after we create some Items. 
 
 
-First, lets Change the route path to illustrate a point. Run:
+First, lets change the route path to illustrate a point. Run:
 
 ```
 
@@ -246,7 +245,7 @@ You should see this:
 
 image httpie-get-404
 
-We went to an undefined route, so there was nothing for the browser/server to do. This is a 404 error and they are common in devopling and tell you that you need to investigate your routes.
+We used a 'path' that was undefined, so there was nothing for the browser/server to do. There was no route to handle the browsers/servers request. This is a 404 error. They are common in devopling and tell you that you need to investigate your routes or paths.
 
 OK, back to the CRUD.
 
@@ -299,11 +298,41 @@ We are going to put it to work in our 'update' route.
 #### UPDATE
 
 ```
+router.put('/items/:id', function(req, res, next) {
+	var id = {_id: req.params.id};
+	var update = {name: req.body.name, type: req.body.type};
+	var options = {new: true};
+
+	Item.findOneAndUpdate(id, update, options, function(err, data){
+		if (err) {
+			res.json(err.message);
+		}
+		else {
+			res.json(data);
+		}
+	});
+});
 
 ```
 
+You should see this:
+
+image httpie-put-200
+
+Look at the path we defined for this route. 
+
+`/items/:id`
+
+The `:id` allows us to pass in a value with the URL and recieve it on the otherside via the request object. You can see in the logic of the route we are grabbing that id with via `req.params.id`. The variable name you put after the colon is the variable name you will use to access the value within the route. pretty cool. This means we have two ways to pass info to the route: 
+
+1 via the URL, req.params
+1 via the body (possibly in a form), req.body
+
+In this route we used both to gut our update accomplished. There are many different ways to utilize this functionality and how you implement it will come down to the specific project needs.
 
 #### DELETE
+
+And for our final trick, delete.
 
 ```
 router.delete('/items/:id', function(req, res, next) {
@@ -322,6 +351,9 @@ router.delete('/items/:id', function(req, res, next) {
 
 ```
 
+If all goes well you will see this:
+
+image httpie-delete-200
 
 
 
