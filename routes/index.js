@@ -51,6 +51,23 @@ router.get('/items/:id', function(req, res, next) {
 	});
 });
 
+/* UPDATE one item */
+router.put('/items/:id', function(req, res, next) {
+	var id = {_id: req.params.id};
+	var update = {name: req.body.name, type: req.body.type};
+	var options = {new: true};
+
+	Item.findOneAndUpdate(id, update, options, function(err, data){
+		if (err) {
+			res.json(err.message);
+		}
+		else {
+			res.json(data);
+		}
+	});
+});
+
+
 /* DELETE one item */
 router.delete('/items/:id', function(req, res, next) {
 	Item.findOneAndRemove({_id: req.params.id}, function(err, data){
