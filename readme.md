@@ -167,6 +167,18 @@ talk about ObjectId at some point
 
 ### CRUD Routes
 
+In index.js we need to require our database file to get access to the Schema.
+
+``` javascript
+var Item = require('../database.js');
+```
+
+Lets create our first route. We need to be able to get all of our Items from the database. 
+
+```
+
+```
+
 
 
 
