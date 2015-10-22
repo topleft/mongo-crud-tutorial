@@ -7,7 +7,7 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-/* post a new item */ 
+/* POST a new item */ 
 router.post('/items', function(req, res, next) {
 	var newItem = new Item({name: req.body.name, type: req.body.type});
 	newItem.save(function(err, data){
@@ -21,9 +21,8 @@ router.post('/items', function(req, res, next) {
 });
 
 
-// get items from database and respond with json
+/* GET all items */
 router.get('/items', function(req, res, next) {
-	console.log('hello');
 	Item.find({}, function(err, data){
 		if (err) {
 			res.json(err);
@@ -33,6 +32,36 @@ router.get('/items', function(req, res, next) {
 		}
 		else {
 			res.json(data);
+		}
+	});
+});
+
+/* GET one item */
+router.get('/items/:id', function(req, res, next) {
+	Item.find({_id: req.params.id}, function(err, data){
+		if (err) {
+			res.json(err.message);
+		}
+		else if (data.length===0) {
+			res.json({message: 'An item with that id does not exist in this database.'});
+		}
+		else {
+			res.json(data);
+		}
+	});
+});
+
+/* DELETE one item */
+router.delete('/items/:id', function(req, res, next) {
+	Item.findOneAndRemove({_id: req.params.id}, function(err, data){
+		if (err) {
+			res.json(err.message);
+		}
+		else if (data.length===0) {
+			res.json({message: 'An item with that id does not exist in this database.'});
+		}
+		else {
+			res.json({message: 'Success. Item deleted.'});
 		}
 	});
 });
