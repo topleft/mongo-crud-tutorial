@@ -9,4 +9,6 @@ var itemSchema = new Schema ({
 
 var Item = mongoose.model('items', itemSchema);
 
+mongoose.connect('mongodb://localhost/crud-october');
+
 module.exports = Item;
