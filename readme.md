@@ -157,7 +157,7 @@ In the terminal, in the root of the project directory (mongo-crud), run:
 
 If everything is set up correctly you should see:
 
-** img of express page
+![express default page](./public/images/express-default-page.png)
 
 Those were all modifications dealing with how our page renders html files. We are now going to setup our app's database, MongoDB with the Mongoose framework.
 
@@ -288,7 +288,7 @@ http GET localhost:3000/items
 
 You should see this:
 
-image httpie-get-no-items
+![swig dependency](./public/images/http-get-no-items.png)
 
 You can see in the second line `HTTP/1.1 200 OK`. This means our route was successful and that the logic in our route was executed. You can confirm that this logic was correct becuase it returned "There are no Items in the database." in 'json' format. We'll come back and test this some more after we create some Items. 
 
@@ -303,7 +303,7 @@ http GET localhost:3000/things
 
 You should see this: 
 
-image httpie-get-404
+![httpie GET 404](./public/images/httpie-get-404.png)
 
 We used a 'path' that was undefined, so there was nothing for the browser/server to do. There was no route to handle the browsers/servers request. This is a 404 error. They are common in devopling and tell you that you need to investigate your routes or paths.
 
@@ -346,7 +346,7 @@ http -f POST localhost:3000/items name="bicycle" type="vehicle"
 
 You should see this:
 
-image httpie-post-200
+![httpie-post-200](./public/images/httpie-post-200.png)
 
 
 Ok, awesome, we can create new Items. Lets look a little closer at that json object that came back. It has a 'name' and 'type' property which we should expect. But it also has '_id' and '_v'. We won't worry about the latter in this tutorial, but I do want to look at the former.
@@ -377,7 +377,8 @@ router.put('/items/:id', function(req, res, next) {
 
 You should see this:
 
-image httpie-put-200
+![httpie-put-200](./public/images/httpie-put-200.png)
+
 
 Look at the path we defined for this route. 
 
@@ -413,7 +414,8 @@ router.delete('/items/:id', function(req, res, next) {
 
 If all goes well you will see this:
 
-image httpie-delete-200
+![httpie-delete-200](./public/images/httpie-delete-200.png)
+
 
 
 This completes the server-side code for our basic crud app. Wow, that was huge. Don't worry if you don't understand it all completely. Sleep on it. And do it again, as much from memory as possible. Maybe next time, depending on the outcome of the request/respponse send a custom messages back to the user. Change up the Schema to be houses with colors, or cars with years, or friends with phone numbers and birthdays. The CRUD app is essential to you as a programmer, get real familiar with all of its parts. Another great tutorial on NodeJS basics is [Getting Started with Node](http://mherman.org/blog/2014/02/16/getting-started-with-node/#.Vil7IhCrRE4) by my friend Michael Herman. Check it out!
