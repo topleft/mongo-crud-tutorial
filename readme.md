@@ -73,7 +73,7 @@ A 'templating language' provides a syntax for making more dynamic html pages. Ja
 Add this to your package.json
 `'swig': '^1.4.2'`
 
-![swig dependency](./packagejsonswig.png)
+![swig dependency](./public/images/package.json-swig.png)
 
 /mongo-talk/public/images/packagejson-swig.png
 
