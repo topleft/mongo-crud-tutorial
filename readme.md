@@ -1,13 +1,38 @@
-### Express Generator
+## MongoDB Crud App Tutorial
+
+This tutorial tackles a vital programming fundamental, **CRUD**. Nearly every single application on the web today creates and manipulates data as a core part of its functionality. My goal with this lesson is to get a beginner developer with a basic understanding of HTML, CSS, JavaScript and an interest in the MEAN stack to take a massive step towards the professional world. This is not going to address all aspects of serverside code, but instead shed some light on aspects of routes and MongoDB that I struggled with when attempting my fisrt CRUD apps.   
+
+#### NodeJS
+
+Install NodeJs, go [here](https://nodejs.org/en/).
+
+This will also install [NPM](https://docs.npmjs.com/getting-started/what-is-npm), which is a vital brick in your new path as a MEAN stack developer.
+
+#### Express Generator
+
+We continue by installing the Express Generator via NPM. This will provide the basic project structure for our app. If this is your first web app, these files might be a little daunting. **Thats fine. Slowly but surely should be your motto.** We will tackle some of the basics and leave some others for another time. 
 
 `npm install -g express generator`
 
 `brew install httpie` - we'll use this later
 
+If you dont have home brew installed, go [here](http://brew.sh/). 
+
 ### Initital Project Structure 
 
->branch first-generator
+>branch: first-generator
 
+Make a new directory:
+
+`mkdir mongo-crud && cd mongo-crud`
+
+Then run the express generator:
+
+`npm express-generator`
+
+The project structure we just created looks like this:
+
+```
 ├── app.js
 ├── bin
 │   └── www
@@ -24,16 +49,18 @@
     ├── error.jade
     ├── index.jade
     └── layout.jade
+```
 
 ### Refactor with Swig
 
-> branch second-swig
+> branch: second-swig
 
-Remove jade templating and use swig instead.
+A 'templating language' provides a syntax for making more dynamic html pages. Jade is a very common 'templating language' used with the MEAN stack. I like using 'swig', a personal choice. Lets convert this app from 'jade' to 'swig'. 
 
 Add this to your package.json
-`"swig": "^1.4.2"`
-Run npm install
+`'swig': '^1.4.2'`
+
+Run `npm install`.
 
 In app.js remove:
 
@@ -42,8 +69,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 ```
 
-
-In app.js add:
+In that same spot in app.js, add:
 
 ```	javascript
 var swig = require('swig')
@@ -53,9 +79,7 @@ app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
 ```
 
-In the views folder remove the all files and add a 
-		layout.html
-		index.html
+In the **views** folder remove the all files and add: **layout.html**, **index.html**
 
 Cut and paste this code into the layout.html:
 
@@ -79,7 +103,9 @@ Cut and paste this code into the layout.html:
 
 ```
 
-Cut and paste this into you index.html:
+This the foundation of all of our html pages and we can include content from other html files using the 'swig' syntax.
+
+Cut and paste this into your index.html:
 
 ```
 {% extends 'layout.html' %}
@@ -100,27 +126,39 @@ Cut and paste this into you index.html:
 
 ```
 
-Now in the terminal, in the root of the project directory run: 
+Look at the `{% extends 'layout.html' %}`. That is saying, "This code will be wrapped in the layout,html file". Don't be too concerned now with this, as our focus here is the CRUD app. Onward!
+
+
+
+In the terminal, in the root of the project directory (mongo-crud), run: 
+
 'npm start' 
 
-If everything is setup correctly you should see this:
+If everything is set up correctly you should see:
 
 ** img of express page
 
+Those were all modifications dealing with how our page renders html files. We are now going to setup our app's database, MongoDB with the Mongoose framework.
+
 ### Set Up MongoDB with Mongoose
 
-> branch third-mongodb
+> branch: third-mongodb
 
 Start by installing Mongo and Mongoose:
 
 `npm install mongodb -g`
 
+This installed MongoDB on your whole machine so you can use it with all your MEAN projects, no need to run this command again.
+
 `npm install mongoose --save`
 
-Have a look at the package.json file. We now have mongoose in our dependencies.
+This installed mongoose 'locally', meaning only for this project. This concept of global and local is important. Have a look at the package.json file. We now have mongoose in our dependencies. If it is in your package.json file, then it is installed specifically for this project. 
+
+Keep thinking about local and global as you create more projects, it will become more clear as you make more code. For now, just know that NPM installs packages for use both on your computer (global) and/or within specific projects (local).
+
 
 Lets look at the MongoDB through our terminal.
-In the command line type `sudo mongod`, then  enter you password. This will start the MongoDB daemon running. Now open a new tab and type `mongo`. This is the command line interface for mongoDB. Enter the command `show dbs`. This will show any databases that you have created. If you are using mongo for the first time it should be !?!?!?!?!.
+In the command line type `sudo mongod`, then  enter your computer password. This will start the MongoDB daemon running. Now open a new tab and type `mongo`. This is the command line interface for mongoDB. Enter the command `show dbs`. This will show any databases that you have created. If you are using mongo for the first time there will be nothing listed. We are going to change that by the end of this project.
 
 
 Next add a new file, 'database.js' to the root directory.
@@ -128,7 +166,7 @@ Next add a new file, 'database.js' to the root directory.
 In database.js add the following code:
 
 ```
-// bring in mongoose and grab Schema constructor
+// bring in mongoose and grab the Schema constructor
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
@@ -139,7 +177,7 @@ var itemSchema = new Schema ({
 	type: String
 });
 
-// create a model, which is a Mongo collection, which is akin to a SQL table
+// create a model, which holds all of our Items
 var Item = mongoose.model('items', itemSchema);
 
 // set up the connection to the local database, if it doesn't exist yet one will be created automatically
@@ -150,7 +188,11 @@ module.exports = Item;
 
 
 ```
-Possible schema field value types:
+This has setup our database with a format in which to store our data, aka the **'Schema'**. Created a place for all the data to be gathered, the **'model'**, and established a connection to the database, the **'connection'**.
+
+We have set both of our fields up to accept strings. If we try to put a number or an object or an array, it will reject it. In most cases it is valuable to specify the type of data going into the database for consisntency reasons. On the other side of the coin, MongoDB allows for different data types to be passed in to the same field, which if used properly, is a very powerful tool.
+
+Possible schema value types:
 
 * String
 * Number
@@ -161,10 +203,7 @@ Possible schema field value types:
 * Objectid
 * Array
 
-http://mongoosejs.com/docs/schematypes.html
-
-
-talk about ObjectId at some point
+More info on Mongoose Schemas [here](http://mongoosejs.com/docs/schematypes.html).
 
 ### CRUD Routes
 
