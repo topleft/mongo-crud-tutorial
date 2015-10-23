@@ -1,30 +1,41 @@
 ## MongoDB Crud App Tutorial
 
-This tutorial tackles a vital programming fundamental, **CRUD**. Nearly every single application on the web today creates and manipulates data as a core part of its functionality. My goal with this lesson is to get a beginner developer with a basic understanding of HTML, CSS, JavaScript and an interest in the MEAN stack to take a massive step towards the professional world. This is not going to address all aspects of serverside code, but instead shed some light on aspects of routes and MongoDB that I struggled with when attempting my fisrt CRUD apps.   
+This tutorial tackles a vital programming fundamental, **CRUD**. Nearly every single application on the web today creates and manipulates data as a core part of its functionality. My goal with this lesson is to get a beginner developer with a basic understanding of the command line, HTML, CSS, JavaScript and an interest in the MEAN stack to take a massive step towards the professional coding. This is not going to address all aspects of serverside code, but it will shed some light project setup, routes and MongoDB.   
 
 #### NodeJS
 
-Install NodeJs, go [here](https://nodejs.org/en/).
+Install NodeJS, go [here](https://nodejs.org/en/).
 
 This will also install [NPM](https://docs.npmjs.com/getting-started/what-is-npm), which is a vital brick in your new path as a MEAN stack developer.
 
+Some key words related to this topic that you may want to look up:
+
+*package.json
+*dependencies
+
+
 #### Express Generator
 
-We continue by installing the Express Generator via NPM. This will provide the basic project structure for our app. If this is your first web app, these files might be a little daunting. **Thats fine. Slowly but surely should be your motto.** We will tackle some of the basics and leave some others for another time. 
+We continue by installing the Express Generator via NPM. This will provide the basic project structure for our app. If this is your first web app, these files might be a little daunting. **Thats fine. 'Slowly but surely' should be your motto.** We will tackle some of the basics and leave some others for another time. 
 
 `npm install -g express generator`
 
 `brew install httpie` - we'll use this later
 
-If you dont have home brew installed, go [here](http://brew.sh/). 
+If you don't have home brew installed, go [here](http://brew.sh/). 
+
+Home brew, much like NPM, is a service that makes downloading and installing packages or small programs via the command line a breeze. 
 
 ### Initital Project Structure 
 
 >branch: first-generator
 
+Anytime you start a new project, create a new directory to hold all of the files related to that project.
+
 Make a new directory:
 
 `mkdir mongo-crud && cd mongo-crud`
+
 
 Then run the express generator:
 
@@ -51,16 +62,22 @@ The project structure we just created looks like this:
     └── layout.jade
 ```
 
+Get familiar with this layout as it is super common in application development.
+
 ### Refactor with Swig
 
 > branch: second-swig
 
-A 'templating language' provides a syntax for making more dynamic html pages. Jade is a very common 'templating language' used with the MEAN stack. I like using 'swig', a personal choice. Lets convert this app from 'jade' to 'swig'. 
+A 'templating language' provides a syntax for making more dynamic html pages. Jade is a very common 'templating language' used with the MEAN stack. I like using 'swig' intead, a personal choice. Lets convert this app from 'jade' to 'swig'. 
 
 Add this to your package.json
 `'swig': '^1.4.2'`
 
+![package.json add swig]('/mongo-talk/public/images/package.json-swig.png')
+
 Run `npm install`.
+
+We just used NPM to install a 'package'. NPM knows to look for the `package.json` file, which was created for us in the express generator build. 
 
 In app.js remove:
 
@@ -78,6 +95,8 @@ var swig = new swig.Swig();
 app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
 ```
+
+This is the first look at the app.js file. This is the heart of our application. In here we set the basic behavoir and make availble the neccesities needed to run the app. 
 
 In the **views** folder remove the all files and add: **layout.html**, **index.html**
 
@@ -126,7 +145,7 @@ Cut and paste this into your index.html:
 
 ```
 
-Look at the `{% extends 'layout.html' %}`. That is saying, "This code will be wrapped in the layout,html file". Don't be too concerned now with this, as our focus here is the CRUD app. Onward!
+Look at the `{% extends 'layout.html' %}`. That is saying, "This code will be wrapped in the layout.html file". Don't be too concerned now with this, as our focus here is the serverside code of this CRUD app. Onward!
 
 
 
@@ -398,6 +417,8 @@ image httpie-delete-200
 This completes the server-side code for our basic crud app. Wow, that was huge. Don't worry if you don't understand it all completely. Sleep on it. And do it again, as much from memory as possible. Maybe next time, depending on the outcome of the request/respponse send a custom messages back to the user. Change up the Schema to be houses with colors, or cars with years, or friends with phone numbers and birthdays. The CRUD app is essential to you as a programmer, get real familiar with all of its parts. Another great tutorial on NodeJS basics is [Getting Started with Node](http://mherman.org/blog/2014/02/16/getting-started-with-node/#.Vil7IhCrRE4) by my friend Michael Herman. Check it out!
 
 In PART 2 of this tutorial we will sync up the front end so that a user can use the browser to access all of our beautiful CRUD routes to create and manipulate data.
+
+Thanks for reading.
 
 
 
