@@ -414,7 +414,7 @@ router.delete('/items/:id', function(req, res, next) {
 
 If all goes well you will see this:
 
-![httpie-delete-200](./public/images/index.js-delete.png)
+![httpie-delete-200](./public/images/httpie-delete-200.png)
 
 
 
