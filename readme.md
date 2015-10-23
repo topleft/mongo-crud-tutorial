@@ -288,7 +288,7 @@ http GET localhost:3000/items
 
 You should see this:
 
-![swig dependency](./public/images/http-get-no-items.png)
+![httpie GET no items](./public/images/httpie-get-no-items.png)
 
 You can see in the second line `HTTP/1.1 200 OK`. This means our route was successful and that the logic in our route was executed. You can confirm that this logic was correct becuase it returned "There are no Items in the database." in 'json' format. We'll come back and test this some more after we create some Items. 
 
@@ -414,7 +414,7 @@ router.delete('/items/:id', function(req, res, next) {
 
 If all goes well you will see this:
 
-![httpie-delete-200](./public/images/httpie-delete-200.png)
+![httpie-delete-200](./public/images/index.js-delete.png)
 
 
 
