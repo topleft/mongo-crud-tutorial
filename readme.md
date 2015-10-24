@@ -314,7 +314,19 @@ In index.js we need to require our database file to get access to the Schema:
 var Item = require('../database.js');
 ```
 
-The 'out-of-the-box' setup that our express generator provided has 'express' required in our `index.js` and then sets the variable `router` to an instance of an express router object. This object will handle the transfering/serving of data as called for by our HTTP requests. The router object includes functions that we can call on to acheive our basic CRUD operations. When we define these CRUD operations using the router instance, we are creating **routes**. I think of them as pathways for data between our browser/server and the database. I packed a lot of info in there. Don't get  bogged down in the exact workings of all of these technologies. The goal here is to expose you to these concepts and to get your hands dirty making them work. As time goes on, they will all slowly make more sense. Focus now on following all the steps and getting this app to work. So, lets get to it.
+The 'out-of-the-box' setup that our express generator provided has 'express' required in our `index.js` and then sets the variable `router` to an instance of an express router object. This object will handle the transfering/serving of data as called for by our HTTP requests. The router object includes functions that we can call on to acheive our basic CRUD operations. When we define these CRUD operations using the router instance, we are creating **routes**. I think of them as pathways for data between our browser/server and the database. I packed a lot of info in there. Don't get bogged down in the exact workings of all of these technologies. The goal here is to expose you to these concepts and to get your hands dirty making them work. As time goes on, they will all slowly make more sense. Focus now on following all the steps and getting this app to work. 
+
+All of our CRUD routes will have a similar structure:
+
+* action: get, post, put, or delete
+* path
+* function were we define our logic (ie. do stuff with data)
+* Mongoose query: find, findOneById, findOneByIdAndUpdate, findOneByIdAndRemove
+* response
+
+Go [here](http://mongoosejs.com/docs/queries.html) to checkout the Mongoose docs and the plethora of query functions provided.
+
+So, lets get to it.
 
 #### READ
 
@@ -324,14 +336,14 @@ We need to be able to read or get all of the Items from the database.
 // call the GET method, and define an anonymous function
 router.get('/items', function(req, res, next) {
 
-// instantiate a new Item with the values supplied by the request  
+// query the data base to find all of the Items  
 	Item.find({}, function(err, data){
 
 // handle an error
 		if (err) {
 			res.json(err);
 		}
-// handle an empty database 
+// handle an empty database by checking if the data array is empty
 		else if (data.length===0) {
 			res.json({message: 'There are no items in the database.'});
 		}
@@ -347,9 +359,13 @@ There is a TON going on in there and if you are new to routes, it is really inti
 
 After we call `router.get`, we define the URL path, in this case `/items`. Our app will use this 'path' to utilize the `GET` functionallity of the app.
 
-Let me show you what I mean with that 'httpie' we installed earlier. 'httpie' is a tool that allows us to test routes in the terminal. We test that our endpoints are being hit, examine what information we get back from different endpoints, as well as mock form submits and pass information. Remeber, an 'endpoint' is the same thing as a 'route', it is the place where a path take us.
+Inside the function we use the Mongoose `find()` and pass an empty object. This says, 'find all documents in this collection'.
 
-In the terminal, in you projects root directory fire up the database using `sudo mongod`, and in another tab alos in the project's root directory, fire up the server with `npm start`. In yet another tab run:
+Inside another function we handle the different possiblities: error, no data, or data. The use `res.json()` to return our information. The `res` parameter is short for response and  the `.json` sends the information back the 'JSON' format. More about 'JSON' [here on the MDN site](https://developer.mozilla.org/en-US/docs/Glossary/JSON) and [here for a basic tutorial](https://www.youtube.com/watch?v=BGfmpvM4Zp0).
+
+We are going to test this out with that 'httpie' we installed earlier. 'httpie' is a tool that allows us to test routes in the terminal. We test that our endpoints are being hit, examine what information we get back from different endpoints, as well as mock form submits and pass information. Remeber, an 'endpoint' is the same thing as a 'route', it is the place where a path take us.
+
+In the terminal, in you projects root directory fire up the database using `sudo mongod`, and in another tab also in the project's root directory, fire up the server with `npm start`. In yet another tab run:
 
 ```
 
@@ -410,6 +426,8 @@ router.post('/items', function(req, res, next) {
 
 ```
 
+The comments sum up what is going on in this route, but there are a few new things in here.
+
 Have a look at the `req.body`. 'req' stands for 'request'. It is an object sent by the browser/server with properties that we can access. We are grabbing the 'body' property and getting its values to instantiate our new Item.
 
 Now we will test this out with httpie in the terminal. Run:
@@ -419,6 +437,8 @@ http -f POST localhost:3000/items name="bicycle" type="vehicle"
 
 ```
 
+The '-f' delcares that we are mocking a form submission. Then we pass keys set to values. 
+
 You should see this:
 
 ![httpie-post-200](./public/images/httpie-post-200.png)
@@ -426,9 +446,9 @@ You should see this:
 
 Ok, awesome, we can create new Items. Lets look a little closer at that json object that came back. It has a 'name' and 'type' property which we should expect. But it also has '_id' and '_v'. We won't worry about the latter in this tutorial, but I do want to look at the former.
 
-'_id' is a unique id created by Mongo when a new item is saved. It will always be unique, always. This is important and it is extremely useful.  A couple use cases are finding documents in your database, or diferentiating between two similar documents.  
+'_id' is a unique id created by Mongo when a new item is saved. It will always be unique, always. This is important and it is extremely useful. A couple use cases are finding documents in your database, or diferentiating between two similar documents.  
 
-We are going to put it to work in our 'update' route.
+We are going to put this `_id` to work in our 'update' route.
 
 #### UPDATE
 
@@ -455,16 +475,20 @@ You should see this:
 ![httpie-put-200](./public/images/httpie-put-200.png)
 
 
-Look at the path we defined for this route. 
+First off, we called `put` on our router object. This is just another word for update and it is the RESTful syntax for our CRUD app. 
+
+Look at the path that we defined for this route. 
 
 `/items/:id`
 
-The `:id` allows us to pass in a value with the URL and recieve it on the otherside via the request object. You can see in the logic of the route we are grabbing that id with via `req.params.id`. The variable name you put after the colon is the variable name you will use to access the value within the route. pretty cool. This means we have two ways to pass info to the route: 
+The `:id` allows us to pass in a value with the URL and recieve it on the otherside via the request object. You can see in the logic of the route that we are grabbing that id with `req.params.id`. The variable name you put after the colon is the variable name you will use to access the value within the route. pretty cool. This means we have two ways to pass info to the route: 
 
 1 via the URL, req.params
 1 via the body (possibly in a form), req.body
 
-In this route we used both to gut our update accomplished. There are many different ways to utilize this functionality and how you implement it will come down to the specific project needs.
+In this route we used both to get our update accomplished. There are many different ways to utilize this functionality and how you implement it will come down to the specific project needs.
+
+
 
 #### DELETE
 
@@ -487,10 +511,11 @@ router.delete('/items/:id', function(req, res, next) {
 
 ```
 
+Go through and add your own comments to this route identifying what each part does. If you getstuck, go back and look at the previous routes for clues.
+
 If all goes well you will see this:
 
 ![httpie-delete-200](./public/images/httpie-delete-200.png)
-
 
 
 This completes the server-side code for our basic crud app. Wow, that was huge. Don't worry if you don't understand it all completely. Sleep on it. And do it again, as much from memory as possible. Maybe next time, depending on the outcome of the request/respponse send a custom messages back to the user. Change up the Schema to be houses with colors, or cars with years, or friends with phone numbers and birthdays. The CRUD app is essential to you as a programmer, get real familiar with all of its parts. Another great tutorial on NodeJS basics is [Getting Started with Node](http://mherman.org/blog/2014/02/16/getting-started-with-node/#.Vil7IhCrRE4) by my friend Michael Herman. Check it out!
