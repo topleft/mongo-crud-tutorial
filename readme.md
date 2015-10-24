@@ -1,6 +1,6 @@
 ## MongoDB Crud App Tutorial
 
-This tutorial tackles a vital programming fundamental, **CRUD**. Nearly every single application on the web today creates and manipulates data as a core part of its functionality. My goal with this lesson is to get a beginner developer with a basic understanding of the command line, HTML, CSS, JavaScript and an interest in the MEAN stack to take a massive step towards the professional coding. This is not going to address all aspects of serverside code, but it will shed some light project setup, routes and MongoDB.   
+This tutorial tackles a vital programming fundamental, **CRUD**. Nearly every single application on the web today creates and manipulates data as a core part of its functionality. My goal with this lesson is to get a beginner developer with a basic understanding of the command line, HTML, CSS, JavaScript and an interest in the MEAN stack to take a massive step towards professional coding. This is not going to address all aspects of serverside code, but it will shed some light project setup, routes and MongoDB.   
 
 #### NodeJS
 
@@ -62,7 +62,7 @@ The project structure we just created looks like this:
     └── layout.jade
 ```
 
-Get familiar with this layout as it is super common in application development.
+Get familiar with this layout as it is super common in web application development.
 
 ### Refactor with Swig
 
@@ -161,6 +161,8 @@ If everything is set up correctly you should see:
 
 Those were all modifications dealing with how our page renders html files. We are now going to setup our app's database, MongoDB with the Mongoose framework.
 
+## Part 2
+
 ### Set Up MongoDB with Mongoose
 
 > branch: third-mongodb
@@ -209,9 +211,71 @@ module.exports = Item;
 
 
 ```
-This has setup our database with a format in which to store our data, aka the **'Schema'**. Created a place for all the data to be gathered, the **'model'**, and established a connection to the database, the **'connection'**.
+This has setup our database and a structure in which to store our data, aka the **'Schema'**. We created a place for all the data to be gathered, the **'model'**, and established a connection to the database, the **'connection'**.
 
-We have set both of our fields up to accept strings. If we try to put a number or an object or an array, it will reject it. In most cases it is valuable to specify the type of data going into the database for consisntency reasons. On the other side of the coin, MongoDB allows for different data types to be passed in to the same field, which if used properly, is a very powerful tool.
+We have set both of our fields up to accept strings. If we try to put in a number or an object or an array, it will reject it. In most cases it is valuable to specify the type of data going into the database for consisntency. For example, if you make a query to your DB for items and their quantities you will probably expect quantity value to be an integer. This way you can do math on the quantity of chairs.
+
+```javascript
+item = {
+	name: 'chair',
+	quantity: 8
+}
+
+item.quantity += 2
+```
+
+But, if you allow you database to take any type for the quantity value when creating items and their quantities, then you may end up with a string instead of a number.  
+
+```javascript
+item = {
+	name: 'chair',
+	quantity: '8'
+};
+
+item.quantity += 2;
+
+console.log(item);
+
+==> {
+	name: 'chair',
+	quantity: '82'
+};
+```
+So when trying to keep a database clean and tidy so that we can rely on our values, type restriction is a very useful technique.
+
+On the other side of the coin, MongoDB allows for different data types to be passed in to the same field, which if used properly, is a very powerful tool. If data if often shifting and fields are being added or taken away, allowing for unspecified values is great. For example if you are keeping track of cutomers on a site you might have a key with a vaule that looks like this: 
+
+```
+customerInfo: 
+	{
+		firstName: 'Bob',
+		lastName: 'Alvarez',
+		city: 'Palisade',
+		state: 'Colorado'
+	}
+```
+Now what if a customer is a business and not a single person? So 'city' and 'state' are still usable, but 'firstName' and 'lastName' may no longer work. A relational database is very flexible because of the key value system that it employs. Lets pass is something more apporpriate for a business.
+
+```
+customerInfo: 
+	{
+		businessName: 'Denver Pizza Co.'
+		city: 'Denver',
+		ctate: 'Colorado'
+	}
+```
+
+Or better yet, one account is split between several businesses.
+
+```
+cutomerInfo = {
+	businessName: ['Bluebird Theater', 'Ogden Theater', 'Dazzle Jazz Club'],
+	city: 'Denver',
+	ctate: 'Colorado'
+}
+```
+
+This is a perfectly acceptable solution as far as Mongo is concerned. With a relational database this would be a very different problem.
 
 Possible schema value types:
 
@@ -224,9 +288,14 @@ Possible schema value types:
 * Objectid
 * Array
 
+
+We can also pass whole documents (instances of a schema) as a value. As well there is a syntax for referencing other schemas to create relationships. 
+
 More info on Mongoose Schemas [here](http://mongoosejs.com/docs/schematypes.html).
 
 ### CRUD Routes
+
+Now into the meat of this tutorial!
 
 What is CRUD?
 
@@ -235,7 +304,7 @@ What is CRUD?
 * Update
 * Delete
 
-These are the basic operations that an app needs to perform when handling data. You may have heard of a RESTful API, which is similar, but with specific philosiphies applied that are out of the scope of this tutorial. For more information go [here](http://www.restapitutorial.com/lessons/whatisrest.html). As a programmer, if you can elegantly handle these actions then you are well on your way to turning your skills into a paycheck. 
+These are the basic operations that an app needs to perform when handling data. You may have heard of a RESTful API, which is similar, but with specific philosiphies applied that are out of the scope of this tutorial. For more information on REST go [here](http://www.restapitutorial.com/lessons/whatisrest.html). As a programmer, if you can elegantly handle these actions then you are well on your way to turning your skills into a paycheck. 
 
 Let's begin with our index.js file.
 
@@ -245,7 +314,7 @@ In index.js we need to require our database file to get access to the Schema:
 var Item = require('../database.js');
 ```
 
-The standard setup that our express generator provided has 'express' required in our `index.js` and then sets the variable `router` to an instance of an express router object. This object will handle the transfering/serving of data as called for by our HTTP requests. The router object includes functions that we can call to acheive our basic CRUD operations. When we define these CRUD operations using the router instance, we are creating routes. I think of them as pathways for data between our browser/server and the database. So, lets get to it.
+The 'out-of-the-box' setup that our express generator provided has 'express' required in our `index.js` and then sets the variable `router` to an instance of an express router object. This object will handle the transfering/serving of data as called for by our HTTP requests. The router object includes functions that we can call on to acheive our basic CRUD operations. When we define these CRUD operations using the router instance, we are creating **routes**. I think of them as pathways for data between our browser/server and the database. I packed a lot of info in there. Don't get  bogged down in the exact workings of all of these technologies. The goal here is to expose you to these concepts and to get your hands dirty making them work. As time goes on, they will all slowly make more sense. Focus now on following all the steps and getting this app to work. So, lets get to it.
 
 #### READ
 
@@ -276,9 +345,11 @@ router.get('/items', function(req, res, next) {
 
 There is a TON going on in there and if you are new to routes, it is really intimidating. I broke it down it down somewhat in the comments, but we can dig deeper. 
 
-After we call `router.get` we define the URL path, in this case `/items`. Our app will use this 'path' to utilize the `GET` functionallity of the app.
+After we call `router.get`, we define the URL path, in this case `/items`. Our app will use this 'path' to utilize the `GET` functionallity of the app.
 
-Let me show you what I mean with that 'httpie' we installed earlier. In the terminal fire up the database using `sudo mongod`, and also the server using `npm start`. Now run:
+Let me show you what I mean with that 'httpie' we installed earlier. 'httpie' is a tool that allows us to test routes in the terminal. We test that our endpoints are being hit, examine what information we get back from different endpoints, as well as mock form submits and pass information. Remeber, an 'endpoint' is the same thing as a 'route', it is the place where a path take us.
+
+In the terminal, in you projects root directory fire up the database using `sudo mongod`, and in another tab alos in the project's root directory, fire up the server with `npm start`. In yet another tab run:
 
 ```
 
@@ -290,10 +361,12 @@ You should see this:
 
 ![httpie GET no items](./public/images/httpie-get-no-items.png)
 
-You can see in the second line `HTTP/1.1 200 OK`. This means our route was successful and that the logic in our route was executed. You can confirm that this logic was correct becuase it returned "There are no Items in the database." in 'json' format. We'll come back and test this some more after we create some Items. 
+You can see in the second line `HTTP/1.1 200 OK`. This means our route was successful and that the logic in our route was executed. That is a huge thing. Congrats! If you don't see this, you have to comb over your code and retrace your steps. Compare you files with mine. You'll find the difference. 
+
+You can confirm that this logic was correct becuase it returned, "There are no Items in the database." in 'json' format. Come back and test this some more after we create an Item. 
 
 
-First, lets change the route path to illustrate a point. Run:
+Lets change the route path to illustrate a point. Run:
 
 ```
 
@@ -305,7 +378,9 @@ You should see this:
 
 ![httpie GET 404](./public/images/httpie-get-404.png)
 
-We used a 'path' that was undefined, so there was nothing for the browser/server to do. There was no route to handle the browsers/servers request. This is a 404 error. They are common in devopling and tell you that you need to investigate your routes or paths.
+The important clue here is the '404'. We used a 'path' that was undefined, so there was nothing for the browser/server to do. There was no route to handle the browsers/servers request. This is a 404 error. They are common in developing and tell you that you need to investigate your routes or paths.
+
+If you we're to get a '500', this would mean that your route was found, but that some sort of logic within the route was incorrect.
 
 OK, back to the CRUD.
 
