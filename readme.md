@@ -1,4 +1,4 @@
-## MongoDB Crud App Tutorial
+# MongoDB Crud App Tutorial
 
 **This tutorial tackles a vital programming fundamental, _CRUD_**.
 
@@ -31,7 +31,7 @@ $ brew install httpie
 
 > If you don't have Homebrew installed, go [here](http://brew.sh/). Homebrew, much like NPM, is a service that makes downloading and installing packages, or small programs, via the command line a breeze. 
 
-### Initial Project Structure 
+## Part 1 - Initial Project Structure 
 
 >branch: first-generator
 
@@ -156,8 +156,6 @@ Next, cut and paste this into *index.html*:
 
 Look at the `{% extends 'layout.html' %}`. That is saying, "This code will be wrapped in the *layout.html* file". Don't be too concerned now with this, as our focus here is the server-side code of this CRUD app. Onward!
 
-
-
 In the terminal, in the root of the project directory (`mongo-crud`), run: 
 
 ```sh
@@ -170,7 +168,7 @@ If everything is set up correctly you should see:
 
 Those were all modifications dealing with how our page renders html files. We are now going to setup our app's database, MongoDB along with the Mongoose framework.
 
-## Part 2
+## Part 2 - MongoDB Set up
 
 ### Set Up MongoDB with Mongoose
 
@@ -178,26 +176,27 @@ Those were all modifications dealing with how our page renders html files. We ar
 
 Start by installing Mongo and Mongoose:
 
-`npm install mongodb -g`
-
-This installed MongoDB on your whole machine so you can use it with all your MEAN projects, no need to run this command again.
-
-`npm install mongoose --save`
-
-This installed mongoose 'locally', meaning only for this project. This concept of global and local is important. Have a look at the package.json file. We now have mongoose in our dependencies. If it is in your package.json file, then it is installed specifically for this project. 
-
-Keep thinking about local and global as you create more projects, it will become more clear as you make more code. For now, just know that NPM installs packages for use both on your computer (global) and/or within specific projects (local).
-
-
-Lets look at the MongoDB through our terminal.
-In the command line type `sudo mongod`, then  enter your computer password. This will start the MongoDB daemon running. Now open a new tab and type `mongo`. This is the command line interface for mongoDB. Enter the command `show dbs`. This will show any databases that you have created. If you are using mongo for the first time there will be nothing listed. We are going to change that by the end of this project.
-
-
-Next add a new file, 'database.js' to the root directory.
-
-In database.js add the following code:
-
+```sh
+$ npm install mongodb -g
 ```
+
+This installed MongoDB on your whole machine so you can use it with all your MEAN projects - no need to run this command again.
+
+```sh
+$ npm install mongoose --save
+```
+
+This installed mongoose 'locally' - meaning only for this project. This concept of global and local is important. Have a look at the *package.json* file. We now have mongoose in our dependencies. If it is in your *package.json* file, then it is installed specifically for this project - and it's local. 
+
+Keep thinking about local and global as you create more projects, it will become more clear the more you code. For now, just know that NPM installs packages for use both on your computer (global) and/or within specific projects (local).
+
+Let's look at the MongoDB through our terminal.
+
+In the command line, in a new window, type `sudo mongod`, then  enter your admin/computer password. This will start the MongoDB daemon. Now open another new window and type `mongo`. This is the command line interface (or REPL) for MongoDB. Enter the command `show dbs` to show any databases that you have created. If you are using mongo for the first time there will be nothing listed, which will change soon!
+
+Next add a new file, *database.js* to the root directory add the following code:
+
+```javascript
 // bring in mongoose and grab the Schema constructor
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
@@ -217,74 +216,77 @@ mongoose.connect('mongodb://localhost/mongo-item');
 
 // make the Item Schema available to other files
 module.exports = Item;
-
-
 ```
-This has setup our database and a structure in which to store our data, aka the **'Schema'**. We created a place for all the data to be gathered, the **'model'**, and established a connection to the database, the **'connection'**.
 
-We have set both of our fields up to accept strings. If we try to put in a number or an object or an array, it will reject it. In most cases it is valuable to specify the type of data going into the database for consistency. For example, if you make a query to your DB for items and their quantities you will probably expect quantity value to be an integer. This way you can do math on the quantity of chairs.
+This set up our database and added a structure in which to store our data - a.k.a., the **'Schema'**. We created a place for all the data to be gathered, the **'model'**, and established a **'connection'** to the database.
+
+### Defining a Schema
+
+We have set both of our fields up to accept strings. If we try to put in a number or an object or an array, it will reject it. In *most* cases, it is valuable to specify the type of data going into the database for consistency and security. For example, if you make a query to your DB for items and their quantities you will probably expect quantity value to be an integer. This way you can do math on the quantity of chairs.
 
 ```javascript
 item = {
-	name: 'chair',
-	quantity: 8
+    name: 'chair',
+    quantity: 8
 }
 
 item.quantity += 2
 ```
 
-But, if you allow you database to take any type for the quantity value when creating items and their quantities, then you may end up with a string instead of a number.  
+But, if you allow your database to take any type for the quantity value when creating items and their quantities, then you may end up with a string instead of a number.  
 
 ```javascript
 item = {
-	name: 'chair',
-	quantity: '8'
+  name: 'chair',
+  quantity: '8'
 };
 
 item.quantity += 2;
+```
 
+```
 console.log(item);
 
 ==> {
-	name: 'chair',
-	quantity: '82'
+  name: 'chair',
+  quantity: '82'
 };
 ```
-So when trying to keep a database clean and tidy so that we can rely on our values, type restriction is a very useful technique.
 
-On the other side of the coin, MongoDB allows for different data types to be passed in to the same field, which if used properly, is a very powerful tool. If data if often shifting and fields are being added or taken away, allowing for unspecified values is great. For example if you are keeping track of customers on a site you might have a key with a value that looks like this: 
+So when trying to keep a database clean and tidy so that we can rely on our values, type restriction is a *very* useful technique.
 
-```
-customerInfo: 
-	{
-		firstName: 'Bob',
-		lastName: 'Alvarez',
-		city: 'Palisade',
-		state: 'Colorado'
-	}
-```
-Now what if a customer is a business and not a single person? So 'city' and 'state' are still usable, but 'firstName' and 'lastName' may no longer work. A relational database is very flexible because of the key value system that it employs. Lets pass is something more appropriate for a business.
+On the other side of the coin, MongoDB allows for different data types to be passed in to the same field, which if used properly, is a very powerful tool. If data is often shifting and fields are being added or taken away, allowing for unspecified values is great. For example if you are keeping track of customers on a site you might have a key with a value that looks like this: 
 
+```javascript
+customerInfo: {
+    firstName: 'Bob',
+    lastName: 'Alvarez',
+    city: 'Palisade',
+    state: 'Colorado'
+}
 ```
-customerInfo: 
-	{
-		businessName: 'Denver Pizza Co.'
-		city: 'Denver',
-		ctate: 'Colorado'
-	}
+
+Now what if a customer is a business and not a single person? So 'city' and 'state' are still usable, but 'firstName' and 'lastName' may no longer work. MongoDB is very flexible because of the key value system that it employs. Let's pass in something more appropriate for a business.
+
+```javascript
+customerInfo: {
+    businessName: 'Denver Pizza Co.'
+    city: 'Denver',
+    ctate: 'Colorado'
+}
 ```
 
 Or better yet, one account is split between several businesses.
 
-```
+```javascript
 cutomerInfo = {
-	businessName: ['Bluebird Theater', 'Ogden Theater', 'Dazzle Jazz Club'],
-	city: 'Denver',
-	ctate: 'Colorado'
+    businessName: ['Bluebird Theater', 'Ogden Theater', 'Dazzle Jazz Club'],
+    city: 'Denver',
+    ctate: 'Colorado'
 }
 ```
 
-This is a perfectly acceptable solution as far as Mongo is concerned. With a relational database this would be a very different problem.
+This is a perfectly acceptable solution as far as MongoDB is concerned. With a relational database this would be a very different problem.
 
 Possible schema value types:
 
@@ -296,7 +298,6 @@ Possible schema value types:
 * Mixed
 * Objectid
 * Array
-
 
 We can also pass whole documents (instances of a schema) as a value. As well there is a syntax for referencing other schemas to create relationships. 
 
