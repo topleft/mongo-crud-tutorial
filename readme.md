@@ -1,10 +1,12 @@
 # MongoDB Crud App Tutorial
 
-**This tutorial tackles a vital programming fundamental, _CRUD_**.
+**This tutorial tackles a vital programming fundamental - _CRUD_**.
 
 Nearly every single application on the web today creates and manipulates data as a core part of its functionality. My goal with this lesson is to get a beginner developer with a basic understanding of the command line, HTML, CSS, JavaScript and an interest in the MEAN stack to take a massive step towards professional coding. This is not going to address all aspects of server-side code, but it will shed some light project setup, routes and MongoDB.   
 
-#### NodeJS
+## Step 1 - Initial Project Structure 
+
+### NodeJS
 
 Install [NodeJS](https://nodejs.org/en/).
 
@@ -15,7 +17,7 @@ Some key words related to this topic that you may want to look up:
 * dependencies
 
 
-#### Express Generator
+### Express Generator
 
 We continue by installing the Express Generator via NPM. This will provide the basic project structure for our app. If this is your first web app, these files might be a little daunting. **Thats fine. 'Slowly but surely' should be your motto.** We will tackle some of the basics and leave some others for another time. 
 
@@ -31,7 +33,7 @@ $ brew install httpie
 
 > If you don't have Homebrew installed, go [here](http://brew.sh/). Homebrew, much like NPM, is a service that makes downloading and installing packages, or small programs, via the command line a breeze. 
 
-## Part 1 - Initial Project Structure 
+### Create a Project
 
 >branch: first-generator
 
@@ -168,7 +170,7 @@ If everything is set up correctly you should see:
 
 Those were all modifications dealing with how our page renders html files. We are now going to setup our app's database, MongoDB along with the Mongoose framework.
 
-## Part 2 - MongoDB Set up
+## Step 2 - MongoDB Set up
 
 ### Set Up MongoDB with Mongoose
 
@@ -303,7 +305,7 @@ We can also pass whole documents (instances of a schema) as a value. As well the
 
 More info on Mongoose Schemas [here](http://mongoosejs.com/docs/schematypes.html).
 
-### CRUD Routes
+## Step 3 - CRUD Routes
 
 Now into the meat of this tutorial!
 
@@ -316,33 +318,31 @@ What is CRUD?
 
 These are the basic operations that an app needs to perform when handling data. You may have heard of a RESTful API, which is similar, but with specific philosophies applied that are out of the scope of this tutorial. For more information on REST go [here](http://www.restapitutorial.com/lessons/whatisrest.html). As a programmer, if you can elegantly handle these actions then you are well on your way to turning your skills into a paycheck. 
 
-Let's begin with our index.js file.
-
-In index.js we need to require our database file to get access to the Schema:
+Let's begin with our *index.js* file We need to require our database file to get access to the Schema:
 
 ``` javascript
 var Item = require('../database.js');
 ```
 
-The 'out-of-the-box' setup that our express generator provided has 'express' required in our `index.js` and then sets the variable `router` to an instance of an express router object. This object will handle the transferring/serving of data as called for by our HTTP requests. The router object includes functions that we can call on to achieve our basic CRUD operations. When we define these CRUD operations using the router instance, we are creating **routes**. I think of them as pathways for data between our browser/server and the database. I packed a lot of info in there. Don't get bogged down in the exact workings of all of these technologies. The goal here is to expose you to these concepts and to get your hands dirty making them work. As time goes on, they will all slowly make more sense. Focus now on following all the steps and getting this app to work. 
+The 'out-of-the-box' setup that our express generator provided has 'express' required in our *index.js* and then sets the variable `router` to an instance of an express router object. This object will handle the transferring/serving of data as called for by our HTTP requests. The router object includes functions that we can call on to achieve our basic CRUD operations. When we define these CRUD operations using the router instance, we are creating **routes**. I think of them as pathways for data between our browser/server and the database. I packed a lot of info in there. Don't get bogged down in the exact workings of all of these technologies. The goal here is to expose you to these concepts and to get your hands dirty making them work. As time goes on, they will all slowly make more sense. Focus now on following all the steps and getting this app to work. 
 
 All of our CRUD routes will have a similar structure:
 
 * action: get, post, put, or delete
 * path
-* function were we define our logic (ie. do stuff with data)
-* Mongoose query: find, findOneById, findOneByIdAndUpdate, findOneByIdAndRemove
+* function were we define our logic (i.e., do stuff with data)
+* Mongoose query: `find`, `findOneById`, `findOneByIdAndUpdate`, `findOneByIdAndRemove`
 * response
 
 Go [here](http://mongoosejs.com/docs/queries.html) to checkout the Mongoose docs and the plethora of query functions provided.
 
 So, lets get to it.
 
-#### READ
+### READ
 
-We need to be able to read or get all of the Items from the database.
+We need to be able to read, or get, all of the `Items` from the database.
 
-```
+```javascript
 // call the GET method, and define an anonymous function
 router.get('/items', function(req, res, next) {
 
@@ -365,39 +365,36 @@ router.get('/items', function(req, res, next) {
 });
 ```
 
-There is a TON going on in there and if you are new to routes, it is really intimidating. I broke it down it down somewhat in the comments, but we can dig deeper. 
+There is a TON going on in there and if you are new to routes, it can be really intimidating. I broke it down it down somewhat in the comments, but we can dig deeper. 
 
 After we call `router.get`, we define the URL path, in this case `/items`. Our app will use this 'path' to utilize the `GET` functionality of the app.
 
-Inside the function we use the Mongoose `find()` and pass an empty object. This says, 'find all documents in this collection'.
+Inside the function we use the Mongoose `find()` and pass an empty object. This says, "find all documents in this collection".
 
-Inside another function we handle the different possibilities: error, no data, or data. The use `res.json()` to return our information. The `res` parameter is short for response and  the `.json` sends the information back the 'JSON' format. More about 'JSON' [here on the MDN site](https://developer.mozilla.org/en-US/docs/Glossary/JSON) and [here for a basic tutorial](https://www.youtube.com/watch?v=BGfmpvM4Zp0).
+Inside another function we handle the different possibilities - error, no data, or data. Then use `res.json()` to return our information. The `res` parameter is short for response and  the `.json` sends the information back in the 'JSON' format. More about 'JSON' [here on the MDN site](https://developer.mozilla.org/en-US/docs/Glossary/JSON) and [here for a basic tutorial](https://www.youtube.com/watch?v=BGfmpvM4Zp0).
+
+### Test
 
 We are going to test this out with that 'httpie' we installed earlier. 'httpie' is a tool that allows us to test routes in the terminal. We test that our endpoints are being hit, examine what information we get back from different endpoints, as well as mock form submits and pass information. Remember, an 'endpoint' is the same thing as a 'route', it is the place where a path take us.
 
 In the terminal, in you projects root directory fire up the database using `sudo mongod`, and in another tab also in the project's root directory, fire up the server with `npm start`. In yet another tab run:
 
-```
-
-http GET localhost:3000/items
-
+```sh
+$ http GET localhost:3000/items
 ```
 
 You should see this:
 
 ![httpie GET no items](./public/images/httpie-get-no-items.png)
 
-You can see in the second line `HTTP/1.1 200 OK`. This means our route was successful and that the logic in our route was executed. That is a huge thing. Congrats! If you don't see this, you have to comb over your code and retrace your steps. Compare you files with mine. You'll find the difference. 
+You can see in the second line `HTTP/1.1 200 OK`, which means our route was successful and that the logic in our route was executed. That is a huge thing. Congrats! If you don't see this, you have to comb over your code and retrace your steps. Compare your files with mine. You'll find the difference. Hopefully.
 
 You can confirm that this logic was correct because it returned, "There are no Items in the database." in 'json' format. Come back and test this some more after we create an Item. 
 
+Let's change the route path to illustrate a point. Run:
 
-Lets change the route path to illustrate a point. Run:
-
-```
-
-http GET localhost:3000/things
-
+```sh
+$ http GET localhost:3000/things
 ```
 
 You should see this: 
@@ -406,11 +403,11 @@ You should see this:
 
 The important clue here is the '404'. We used a 'path' that was undefined, so there was nothing for the browser/server to do. There was no route to handle the browsers/servers request. This is a 404 error. They are common in developing and tell you that you need to investigate your routes or paths.
 
-If you we're to get a '500', this would mean that your route was found, but that some sort of logic within the route was incorrect.
+If you were to get a '500', this would mean that your route was found, but that some sort of logic within the route was incorrect.
 
 OK, back to the CRUD.
 
-#### CREATE
+### CREATE
 
 We need to be able to create information and add or `POST` it to our database. 
 
@@ -433,18 +430,16 @@ router.post('/items', function(req, res, next) {
 		}
 	});
 });
-
 ```
 
 The comments sum up what is going on in this route, but there are a few new things in here.
 
 Have a look at the `req.body`. 'req' stands for 'request'. It is an object sent by the browser/server with properties that we can access. We are grabbing the 'body' property and getting its values to instantiate our new Item.
 
-Now we will test this out with httpie in the terminal. Run:
+Now we will test this out with httpie in the terminal:
 
-```
-http -f POST localhost:3000/items name="bicycle" type="vehicle"
-
+```sh
+$ http -f POST localhost:3000/items name="bicycle" type="vehicle"
 ```
 
 The '-f' declares that we are mocking a form submission. Then we pass keys set to values. 
@@ -454,15 +449,15 @@ You should see this:
 ![httpie-post-200](./public/images/httpie-post-200.png)
 
 
-Ok, awesome, we can create new Items. Lets look a little closer at that json object that came back. It has a 'name' and 'type' property which we should expect. But it also has '_id' and '_v'. We won't worry about the latter in this tutorial, but I do want to look at the former.
+Ok, awesome, we can create new Items. Let's now look a little closer at that json object that came back. It has a 'name' and 'type' property which we should expect. But it also has '_id' and '_v'. We won't worry about the latter in this tutorial, but I do want to look at the former.
 
-'_id' is a unique id created by Mongo when a new item is saved. It will always be unique, always. This is important and it is extremely useful. A couple use cases are finding documents in your database, or differentiating between two similar documents.  
+'_id' is a unique id created by MongoDB when a new item is saved. It will always be unique. Always. This is important and it is extremely useful. A couple use cases are for finding documents in your database, or differentiating between two similar documents.  
 
 We are going to put this `_id` to work in our 'update' route.
 
-#### UPDATE
+### UPDATE
 
-```
+```javascript
 router.put('/items/:id', function(req, res, next) {
 	var id = {_id: req.params.id};
 	var update = {name: req.body.name, type: req.body.type};
@@ -477,34 +472,28 @@ router.put('/items/:id', function(req, res, next) {
 		}
 	});
 });
-
 ```
 
 You should see this:
 
 ![httpie-put-200](./public/images/httpie-put-200.png)
 
-
 First off, we called `put` on our router object. This is just another word for update and it is the RESTful syntax for our CRUD app. 
 
-Look at the path that we defined for this route. 
+Look at the path that we defined for this route - `/items/:id`
 
-`/items/:id`
+The `:id` allows us to pass in a value with the URL and receive it on the server-side via the request object. You can see in the logic of the route that we are grabbing that id with `req.params.id`. The variable name you put after the colon is the variable name you will use to access the value within the route. Pretty cool. This means we have two ways to pass info to the route: 
 
-The `:id` allows us to pass in a value with the URL and receive it on the other side via the request object. You can see in the logic of the route that we are grabbing that id with `req.params.id`. The variable name you put after the colon is the variable name you will use to access the value within the route. pretty cool. This means we have two ways to pass info to the route: 
-
-1 via the URL, req.params
-1 via the body (possibly in a form), req.body
+1. via the URL, `req.params`
+1. via the body (possibly in a form), `req.body`
 
 In this route we used both to get our update accomplished. There are many different ways to utilize this functionality and how you implement it will come down to the specific project needs.
 
-
-
-#### DELETE
+### DELETE
 
 And for our final trick, delete.
 
-```
+```javascript
 router.delete('/items/:id', function(req, res, next) {
 	Item.findOneAndRemove({_id: req.params.id}, function(err, data){
 		if (err) {
@@ -527,8 +516,9 @@ If all goes well you will see this:
 
 ![httpie-delete-200](./public/images/httpie-delete-200.png)
 
+## Conclusion
 
-This completes the server-side code for our basic crud app. Wow, that was huge. Don't worry if you don't understand it all completely. Sleep on it. And do it again, as much from memory as possible. Maybe next time, depending on the outcome of the request/response send a custom messages back to the user. Change up the Schema to be houses with colors, or cars with years, or friends with phone numbers and birthdays. The CRUD app is essential to you as a programmer, get real familiar with all of its parts. Another great tutorial on NodeJS basics is [Getting Started with Node](http://mherman.org/blog/2014/02/16/getting-started-with-node/#.Vil7IhCrRE4) by my friend Michael Herman. Check it out!
+This completes the server-side code for our basic crud app. Wow, that was huge. Don't worry if you don't understand it all completely. Sleep on it. And do it again, as much from memory as possible. Maybe next time, depending on the outcome of the request/response, send custom messages back to the user. Change up the Schema to houses with colors, or cars with years, or friends with phone numbers and birthdays. The CRUD app is essential to you as a programmer, get real familiar with all of its parts. Another great tutorial on NodeJS basics is [Getting Started with Node](http://mherman.org/blog/2014/02/16/getting-started-with-node/#.Vil7IhCrRE4) by my friend Michael Herman. Check it out!
 
 In PART 2 of this tutorial we will sync up the front end so that a user can use the browser to access all of our beautiful CRUD routes to create and manipulate data.
 
