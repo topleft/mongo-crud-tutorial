@@ -1,8 +1,21 @@
-# MongoDB Crud App Tutorial
+# NodeJS, Express, MongoDB Crud App 
+### Part 1
 
 **This tutorial tackles a vital programming fundamental - _CRUD_**.
 
-Nearly every single application on the web today creates and manipulates data as a core part of its functionality. My goal with this lesson is to get a beginner developer with a basic understanding of the command line, HTML, CSS, JavaScript and an interest in the MEAN stack to take a massive step towards professional coding. This is not going to address all aspects of server-side code, but it will shed some light project setup, routes and MongoDB.   
+Nearly every single application on the web today creates and manipulates data as a core part of its functionality. My goal with this lesson is to get a beginner developer with a basic understanding of the command line, HTML, CSS, JavaScript and an interest in the MEAN stack to take a massive step towards professional coding. This is not going to address all aspects of server-side code, but it will shed some light project setup, routes and MongoDB.
+
+I have set this project up with different git branches for the different sections. This means the code that appears in your editor will change depending on which branch you are on. To view a branch:
+
+```sh
+$git checkout <branch-name-here>
+```   
+To go back to the main branch:
+```sh
+$git checkout master
+```  
+
+More on [git version control](https://www.atlassian.com/git/tutorials/setting-up-a-repository/).
 
 ## Step 1 - Initial Project Structure 
 
@@ -10,7 +23,7 @@ Nearly every single application on the web today creates and manipulates data as
 
 Install [NodeJS](https://nodejs.org/en/).
 
-This will also install [NPM](https://docs.npmjs.com/getting-started/what-is-npm), which is a vital brick in your new path as a MEAN stack developer.
+This will also install [NPM](https://docs.npmjs.com/getting-started/what-is-npm), which is an essential brick in your new path as a MEAN stack developer.
 
 Some key words related to this topic that you may want to look up:
 * package.json
@@ -206,8 +219,8 @@ var Schema = mongoose.Schema;
 
 // create new Schema, setting keys and value types
 var itemSchema = new Schema ({
-	name: String,
-	type: String
+    name: String,
+    type: String
 });
 
 // create a model, which holds all of our Items
@@ -307,6 +320,8 @@ More info on Mongoose Schemas [here](http://mongoosejs.com/docs/schematypes.html
 
 ## Step 3 - CRUD Routes
 
+> branch: fourth-routes
+
 Now into the meat of this tutorial!
 
 What is CRUD?
@@ -324,7 +339,7 @@ Let's begin with our *index.js* file We need to require our database file to get
 var Item = require('../database.js');
 ```
 
-The 'out-of-the-box' setup that our express generator provided has 'express' required in our *index.js* and then sets the variable `router` to an instance of an express router object. This object will handle the transferring/serving of data as called for by our HTTP requests. The router object includes functions that we can call on to achieve our basic CRUD operations. When we define these CRUD operations using the router instance, we are creating **routes**. I think of them as pathways for data between our browser/server and the database. I packed a lot of info in there. Don't get bogged down in the exact workings of all of these technologies. The goal here is to expose you to these concepts and to get your hands dirty making them work. As time goes on, they will all slowly make more sense. Focus now on following all the steps and getting this app to work. 
+The 'out-of-the-box' setup that our express generator provided has 'express' required in our *index.js* and then sets the variable `router` to an instance of an express router object. This object will handle the transferring/serving of data as called for by our HTTP requests. The router object includes functions that we can call on to achieve our basic CRUD operations. When we define these CRUD operations using the router instance, we are creating **routes**. I think of them as pathways for data between our browser, server and the database. I packed a lot of info in there. Don't get bogged down in the exact workings of all of these technologies. The goal here is to expose you to these concepts and to get your hands dirty making them work. As time goes on, they will all slowly make more sense. Focus now on following all the steps and getting this app to work. 
 
 All of our CRUD routes will have a similar structure:
 
@@ -347,21 +362,21 @@ We need to be able to read, or get, all of the `Items` from the database.
 router.get('/items', function(req, res, next) {
 
 // query the data base to find all of the Items  
-	Item.find({}, function(err, data){
+    Item.find({}, function(err, data){
 
 // handle an error
-		if (err) {
-			res.json(err);
-		}
+        if (err) {
+            res.json(err);
+        }
 // handle an empty database by checking if the data array is empty
-		else if (data.length===0) {
-			res.json({message: 'There are no items in the database.'});
-		}
-// if there are Items, return them	
-		else {
-			res.json(data);
-		}
-	});
+        else if (data.length===0) {
+            res.json({message: 'There are no items in the database.'});
+        }
+// if there are Items, return them  
+        else {
+            res.json(data);
+        }
+    });
 });
 ```
 
@@ -401,7 +416,7 @@ You should see this:
 
 ![httpie GET 404](./public/images/httpie-get-404.png)
 
-The important clue here is the '404'. We used a 'path' that was undefined, so there was nothing for the browser/server to do. There was no route to handle the browsers/servers request. This is a 404 error. They are common in developing and tell you that you need to investigate your routes or paths.
+The important clue here is the '404'. We used a 'path' that was undefined, so there was nothing for the server to do with the browser's request. This is a 404 error. They are common in developing and tell you that you need to investigate your routes/paths.
 
 If you were to get a '500', this would mean that your route was found, but that some sort of logic within the route was incorrect.
 
@@ -416,25 +431,25 @@ We need to be able to create information and add or `POST` it to our database.
 router.post('/items', function(req, res, next) {
 
 // instantiate a new Item with the values supplied by the request  
-	var newItem = new Item({name: req.body.name, type: req.body.type});
+    var newItem = new Item({name: req.body.name, type: req.body.type});
 
 // save the new item using a mongoose function
-	newItem.save(function(err, data){
+    newItem.save(function(err, data){
 // handle an error 
-		if (err) {
-			res.json(err);
-		}
+        if (err) {
+            res.json(err);
+        }
 // no error, then return the data in the json format
-		else {
-			res.json(data);
-		}
-	});
+        else {
+            res.json(data);
+        }
+    });
 });
 ```
 
 The comments sum up what is going on in this route, but there are a few new things in here.
 
-Have a look at the `req.body`. 'req' stands for 'request'. It is an object sent by the browser/server with properties that we can access. We are grabbing the 'body' property and getting its values to instantiate our new Item.
+Have a look at the `req.body`. 'req' stands for 'request'. It is an object sent by the browser with properties that we can access. We are grabbing the 'body' property and getting its values to instantiate our new Item.
 
 Now we will test this out with httpie in the terminal:
 
@@ -459,18 +474,18 @@ We are going to put this `_id` to work in our 'update' route.
 
 ```javascript
 router.put('/items/:id', function(req, res, next) {
-	var id = {_id: req.params.id};
-	var update = {name: req.body.name, type: req.body.type};
-	var options = {new: true};
+    var id = {_id: req.params.id};
+    var update = {name: req.body.name, type: req.body.type};
+    var options = {new: true};
 
-	Item.findOneAndUpdate(id, update, options, function(err, data){
-		if (err) {
-			res.json(err.message);
-		}
-		else {
-			res.json(data);
-		}
-	});
+    Item.findOneAndUpdate(id, update, options, function(err, data){
+        if (err) {
+            res.json(err.message);
+        }
+        else {
+            res.json(data);
+        }
+    });
 });
 ```
 
@@ -495,17 +510,17 @@ And for our final trick, delete.
 
 ```javascript
 router.delete('/items/:id', function(req, res, next) {
-	Item.findOneAndRemove({_id: req.params.id}, function(err, data){
-		if (err) {
-			res.json(err.message);
-		}
-		else if (data.length===0) {
-			res.json({message: 'An item with that id does not exist in this database.'});
-		}
-		else {
-			res.json({message: 'Success. Item deleted.'});
-		}
-	});
+    Item.findOneAndRemove({_id: req.params.id}, function(err, data){
+        if (err) {
+            res.json(err.message);
+        }
+        else if (data.length===0) {
+            res.json({message: 'An item with that id does not exist in this database.'});
+        }
+        else {
+            res.json({message: 'Success. Item deleted.'});
+        }
+    });
 });
 
 ```
