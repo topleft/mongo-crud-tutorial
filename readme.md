@@ -1,49 +1,57 @@
 ## MongoDB Crud App Tutorial
 
-This tutorial tackles a vital programming fundamental, **CRUD**. Nearly every single application on the web today creates and manipulates data as a core part of its functionality. My goal with this lesson is to get a beginner developer with a basic understanding of the command line, HTML, CSS, JavaScript and an interest in the MEAN stack to take a massive step towards professional coding. This is not going to address all aspects of serverside code, but it will shed some light project setup, routes and MongoDB.   
+**This tutorial tackles a vital programming fundamental, _CRUD_**.
+
+Nearly every single application on the web today creates and manipulates data as a core part of its functionality. My goal with this lesson is to get a beginner developer with a basic understanding of the command line, HTML, CSS, JavaScript and an interest in the MEAN stack to take a massive step towards professional coding. This is not going to address all aspects of server-side code, but it will shed some light project setup, routes and MongoDB.   
 
 #### NodeJS
 
-Install NodeJS, go [here](https://nodejs.org/en/).
+Install [NodeJS](https://nodejs.org/en/).
 
 This will also install [NPM](https://docs.npmjs.com/getting-started/what-is-npm), which is a vital brick in your new path as a MEAN stack developer.
 
 Some key words related to this topic that you may want to look up:
-
-*package.json
-*dependencies
+* package.json
+* dependencies
 
 
 #### Express Generator
 
 We continue by installing the Express Generator via NPM. This will provide the basic project structure for our app. If this is your first web app, these files might be a little daunting. **Thats fine. 'Slowly but surely' should be your motto.** We will tackle some of the basics and leave some others for another time. 
 
-`npm install -g express generator`
+```sh
+$ npm install -g express generator
+```
 
-`brew install httpie` - we'll use this later
+Let's also install another dependency, [httpie](https://github.com/jkbrzt/httpie), which we'll use later:
 
-If you don't have home brew installed, go [here](http://brew.sh/). 
+```sh
+$ brew install httpie
+```
 
-Home brew, much like NPM, is a service that makes downloading and installing packages or small programs via the command line a breeze. 
+> If you don't have Homebrew installed, go [here](http://brew.sh/). Homebrew, much like NPM, is a service that makes downloading and installing packages, or small programs, via the command line a breeze. 
 
-### Initital Project Structure 
+### Initial Project Structure 
 
 >branch: first-generator
 
 Anytime you start a new project, create a new directory to hold all of the files related to that project.
 
-Make a new directory:
+Make a new directory and CD into it:
 
-`mkdir mongo-crud && cd mongo-crud`
-
+```sh
+$ mkdir mongo-crud && cd mongo-crud
+```
 
 Then run the express generator:
 
-`npm express-generator`
+```sh
+$ npm express-generator
+```
 
 The project structure we just created looks like this:
 
-```
+```sh
 ├── app.js
 ├── bin
 │   └── www
@@ -68,29 +76,30 @@ Get familiar with this layout as it is super common in web application developme
 
 > branch: second-swig
 
-A 'templating language' provides a syntax for making more dynamic html pages. Jade is a very common 'templating language' used with the MEAN stack. I like using 'swig' intead, a personal choice. Lets convert this app from 'jade' to 'swig'. 
+A 'templating language' provides a syntax for making more dynamic HTML pages. [Jade](http://jade-lang.com/) is a very common 'templating language' used with the MEAN stack. I prefer using [swig](http://paularmstrong.github.io/swig/) instead, a personal choice. Let's convert this app from 'jade' to 'swig':
 
-Add this to your package.json
-`'swig': '^1.4.2'`
+Add this to your *package.json* file:
+
+```
+'swig': '^1.4.2'
+```
 
 ![swig dependency](./public/images/package.json-swig.png)
 
 /mongo-talk/public/images/packagejson-swig.png
 
-Run `npm install`.
+Run `npm install` to to install a 'package'. NPM knows to look for the *package.json* file, which was created for us in the express generator build. 
 
-We just used NPM to install a 'package'. NPM knows to look for the `package.json` file, which was created for us in the express generator build. 
-
-In app.js remove:
+In *app.js* remove:
 
 ``` javascript
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 ```
 
-In that same spot in app.js, add:
+And replace with:
 
-```	javascript
+```javascript
 var swig = require('swig')
 
 var swig = new swig.Swig();
@@ -98,9 +107,9 @@ app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
 ```
 
-This is the first look at the app.js file. This is the heart of our application. In here we set the basic behavoir and make availble the neccesities needed to run the app. 
+This is the first look at the *app.js* file, the heart of our application. In here we set the basic behavior and make available the necessities needed to run the app. 
 
-In the **views** folder remove the all files and add: **layout.html**, **index.html**
+In the **views** folder remove the all files and add: *layout.html* and *index.html*
 
 Cut and paste this code into the layout.html:
 
@@ -121,14 +130,13 @@ Cut and paste this code into the layout.html:
     <script type="text/javascript" src="/js/main.js"></script>
   </body>
 </html>
-
 ```
 
-This the foundation of all of our html pages and we can include content from other html files using the 'swig' syntax.
+This the foundation of all of our HTML pages and we can include content from other HTML files using the 'swig' syntax.
 
-Cut and paste this into your index.html:
+Next, cut and paste this into *index.html*:
 
-```
+```html
 {% extends 'layout.html' %}
 
 {% block title %}{% endblock %}
@@ -144,22 +152,23 @@ Cut and paste this into your index.html:
   </div>
 
 {% endblock %}
-
 ```
 
-Look at the `{% extends 'layout.html' %}`. That is saying, "This code will be wrapped in the layout.html file". Don't be too concerned now with this, as our focus here is the serverside code of this CRUD app. Onward!
+Look at the `{% extends 'layout.html' %}`. That is saying, "This code will be wrapped in the *layout.html* file". Don't be too concerned now with this, as our focus here is the server-side code of this CRUD app. Onward!
 
 
 
-In the terminal, in the root of the project directory (mongo-crud), run: 
+In the terminal, in the root of the project directory (`mongo-crud`), run: 
 
-'npm start' 
+```sh
+$ npm start
+```
 
 If everything is set up correctly you should see:
 
 ![express default page](./public/images/express-default-page.png)
 
-Those were all modifications dealing with how our page renders html files. We are now going to setup our app's database, MongoDB with the Mongoose framework.
+Those were all modifications dealing with how our page renders html files. We are now going to setup our app's database, MongoDB along with the Mongoose framework.
 
 ## Part 2
 
@@ -213,7 +222,7 @@ module.exports = Item;
 ```
 This has setup our database and a structure in which to store our data, aka the **'Schema'**. We created a place for all the data to be gathered, the **'model'**, and established a connection to the database, the **'connection'**.
 
-We have set both of our fields up to accept strings. If we try to put in a number or an object or an array, it will reject it. In most cases it is valuable to specify the type of data going into the database for consisntency. For example, if you make a query to your DB for items and their quantities you will probably expect quantity value to be an integer. This way you can do math on the quantity of chairs.
+We have set both of our fields up to accept strings. If we try to put in a number or an object or an array, it will reject it. In most cases it is valuable to specify the type of data going into the database for consistency. For example, if you make a query to your DB for items and their quantities you will probably expect quantity value to be an integer. This way you can do math on the quantity of chairs.
 
 ```javascript
 item = {
@@ -243,7 +252,7 @@ console.log(item);
 ```
 So when trying to keep a database clean and tidy so that we can rely on our values, type restriction is a very useful technique.
 
-On the other side of the coin, MongoDB allows for different data types to be passed in to the same field, which if used properly, is a very powerful tool. If data if often shifting and fields are being added or taken away, allowing for unspecified values is great. For example if you are keeping track of cutomers on a site you might have a key with a vaule that looks like this: 
+On the other side of the coin, MongoDB allows for different data types to be passed in to the same field, which if used properly, is a very powerful tool. If data if often shifting and fields are being added or taken away, allowing for unspecified values is great. For example if you are keeping track of customers on a site you might have a key with a value that looks like this: 
 
 ```
 customerInfo: 
@@ -254,7 +263,7 @@ customerInfo:
 		state: 'Colorado'
 	}
 ```
-Now what if a customer is a business and not a single person? So 'city' and 'state' are still usable, but 'firstName' and 'lastName' may no longer work. A relational database is very flexible because of the key value system that it employs. Lets pass is something more apporpriate for a business.
+Now what if a customer is a business and not a single person? So 'city' and 'state' are still usable, but 'firstName' and 'lastName' may no longer work. A relational database is very flexible because of the key value system that it employs. Lets pass is something more appropriate for a business.
 
 ```
 customerInfo: 
@@ -304,7 +313,7 @@ What is CRUD?
 * Update
 * Delete
 
-These are the basic operations that an app needs to perform when handling data. You may have heard of a RESTful API, which is similar, but with specific philosiphies applied that are out of the scope of this tutorial. For more information on REST go [here](http://www.restapitutorial.com/lessons/whatisrest.html). As a programmer, if you can elegantly handle these actions then you are well on your way to turning your skills into a paycheck. 
+These are the basic operations that an app needs to perform when handling data. You may have heard of a RESTful API, which is similar, but with specific philosophies applied that are out of the scope of this tutorial. For more information on REST go [here](http://www.restapitutorial.com/lessons/whatisrest.html). As a programmer, if you can elegantly handle these actions then you are well on your way to turning your skills into a paycheck. 
 
 Let's begin with our index.js file.
 
@@ -314,7 +323,7 @@ In index.js we need to require our database file to get access to the Schema:
 var Item = require('../database.js');
 ```
 
-The 'out-of-the-box' setup that our express generator provided has 'express' required in our `index.js` and then sets the variable `router` to an instance of an express router object. This object will handle the transfering/serving of data as called for by our HTTP requests. The router object includes functions that we can call on to acheive our basic CRUD operations. When we define these CRUD operations using the router instance, we are creating **routes**. I think of them as pathways for data between our browser/server and the database. I packed a lot of info in there. Don't get bogged down in the exact workings of all of these technologies. The goal here is to expose you to these concepts and to get your hands dirty making them work. As time goes on, they will all slowly make more sense. Focus now on following all the steps and getting this app to work. 
+The 'out-of-the-box' setup that our express generator provided has 'express' required in our `index.js` and then sets the variable `router` to an instance of an express router object. This object will handle the transferring/serving of data as called for by our HTTP requests. The router object includes functions that we can call on to achieve our basic CRUD operations. When we define these CRUD operations using the router instance, we are creating **routes**. I think of them as pathways for data between our browser/server and the database. I packed a lot of info in there. Don't get bogged down in the exact workings of all of these technologies. The goal here is to expose you to these concepts and to get your hands dirty making them work. As time goes on, they will all slowly make more sense. Focus now on following all the steps and getting this app to work. 
 
 All of our CRUD routes will have a similar structure:
 
@@ -357,13 +366,13 @@ router.get('/items', function(req, res, next) {
 
 There is a TON going on in there and if you are new to routes, it is really intimidating. I broke it down it down somewhat in the comments, but we can dig deeper. 
 
-After we call `router.get`, we define the URL path, in this case `/items`. Our app will use this 'path' to utilize the `GET` functionallity of the app.
+After we call `router.get`, we define the URL path, in this case `/items`. Our app will use this 'path' to utilize the `GET` functionality of the app.
 
 Inside the function we use the Mongoose `find()` and pass an empty object. This says, 'find all documents in this collection'.
 
-Inside another function we handle the different possiblities: error, no data, or data. The use `res.json()` to return our information. The `res` parameter is short for response and  the `.json` sends the information back the 'JSON' format. More about 'JSON' [here on the MDN site](https://developer.mozilla.org/en-US/docs/Glossary/JSON) and [here for a basic tutorial](https://www.youtube.com/watch?v=BGfmpvM4Zp0).
+Inside another function we handle the different possibilities: error, no data, or data. The use `res.json()` to return our information. The `res` parameter is short for response and  the `.json` sends the information back the 'JSON' format. More about 'JSON' [here on the MDN site](https://developer.mozilla.org/en-US/docs/Glossary/JSON) and [here for a basic tutorial](https://www.youtube.com/watch?v=BGfmpvM4Zp0).
 
-We are going to test this out with that 'httpie' we installed earlier. 'httpie' is a tool that allows us to test routes in the terminal. We test that our endpoints are being hit, examine what information we get back from different endpoints, as well as mock form submits and pass information. Remeber, an 'endpoint' is the same thing as a 'route', it is the place where a path take us.
+We are going to test this out with that 'httpie' we installed earlier. 'httpie' is a tool that allows us to test routes in the terminal. We test that our endpoints are being hit, examine what information we get back from different endpoints, as well as mock form submits and pass information. Remember, an 'endpoint' is the same thing as a 'route', it is the place where a path take us.
 
 In the terminal, in you projects root directory fire up the database using `sudo mongod`, and in another tab also in the project's root directory, fire up the server with `npm start`. In yet another tab run:
 
@@ -379,7 +388,7 @@ You should see this:
 
 You can see in the second line `HTTP/1.1 200 OK`. This means our route was successful and that the logic in our route was executed. That is a huge thing. Congrats! If you don't see this, you have to comb over your code and retrace your steps. Compare you files with mine. You'll find the difference. 
 
-You can confirm that this logic was correct becuase it returned, "There are no Items in the database." in 'json' format. Come back and test this some more after we create an Item. 
+You can confirm that this logic was correct because it returned, "There are no Items in the database." in 'json' format. Come back and test this some more after we create an Item. 
 
 
 Lets change the route path to illustrate a point. Run:
@@ -437,7 +446,7 @@ http -f POST localhost:3000/items name="bicycle" type="vehicle"
 
 ```
 
-The '-f' delcares that we are mocking a form submission. Then we pass keys set to values. 
+The '-f' declares that we are mocking a form submission. Then we pass keys set to values. 
 
 You should see this:
 
@@ -446,7 +455,7 @@ You should see this:
 
 Ok, awesome, we can create new Items. Lets look a little closer at that json object that came back. It has a 'name' and 'type' property which we should expect. But it also has '_id' and '_v'. We won't worry about the latter in this tutorial, but I do want to look at the former.
 
-'_id' is a unique id created by Mongo when a new item is saved. It will always be unique, always. This is important and it is extremely useful. A couple use cases are finding documents in your database, or diferentiating between two similar documents.  
+'_id' is a unique id created by Mongo when a new item is saved. It will always be unique, always. This is important and it is extremely useful. A couple use cases are finding documents in your database, or differentiating between two similar documents.  
 
 We are going to put this `_id` to work in our 'update' route.
 
@@ -481,7 +490,7 @@ Look at the path that we defined for this route.
 
 `/items/:id`
 
-The `:id` allows us to pass in a value with the URL and recieve it on the otherside via the request object. You can see in the logic of the route that we are grabbing that id with `req.params.id`. The variable name you put after the colon is the variable name you will use to access the value within the route. pretty cool. This means we have two ways to pass info to the route: 
+The `:id` allows us to pass in a value with the URL and receive it on the other side via the request object. You can see in the logic of the route that we are grabbing that id with `req.params.id`. The variable name you put after the colon is the variable name you will use to access the value within the route. pretty cool. This means we have two ways to pass info to the route: 
 
 1 via the URL, req.params
 1 via the body (possibly in a form), req.body
@@ -511,34 +520,15 @@ router.delete('/items/:id', function(req, res, next) {
 
 ```
 
-Go through and add your own comments to this route identifying what each part does. If you getstuck, go back and look at the previous routes for clues.
+Go through and add your own comments to this route identifying what each part does. If you get stuck, go back and look at the previous routes for clues.
 
 If all goes well you will see this:
 
 ![httpie-delete-200](./public/images/httpie-delete-200.png)
 
 
-This completes the server-side code for our basic crud app. Wow, that was huge. Don't worry if you don't understand it all completely. Sleep on it. And do it again, as much from memory as possible. Maybe next time, depending on the outcome of the request/respponse send a custom messages back to the user. Change up the Schema to be houses with colors, or cars with years, or friends with phone numbers and birthdays. The CRUD app is essential to you as a programmer, get real familiar with all of its parts. Another great tutorial on NodeJS basics is [Getting Started with Node](http://mherman.org/blog/2014/02/16/getting-started-with-node/#.Vil7IhCrRE4) by my friend Michael Herman. Check it out!
+This completes the server-side code for our basic crud app. Wow, that was huge. Don't worry if you don't understand it all completely. Sleep on it. And do it again, as much from memory as possible. Maybe next time, depending on the outcome of the request/response send a custom messages back to the user. Change up the Schema to be houses with colors, or cars with years, or friends with phone numbers and birthdays. The CRUD app is essential to you as a programmer, get real familiar with all of its parts. Another great tutorial on NodeJS basics is [Getting Started with Node](http://mherman.org/blog/2014/02/16/getting-started-with-node/#.Vil7IhCrRE4) by my friend Michael Herman. Check it out!
 
 In PART 2 of this tutorial we will sync up the front end so that a user can use the browser to access all of our beautiful CRUD routes to create and manipulate data.
 
 Thanks for reading.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
