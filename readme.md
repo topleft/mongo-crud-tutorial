@@ -535,6 +535,19 @@ If all goes well you will see this:
 
 This completes the server-side code for our basic crud app. Wow, that was huge. Don't worry if you don't understand it all completely. Sleep on it. And do it again, as much from memory as possible. Maybe next time, depending on the outcome of the request/response, send custom messages back to the user. Change up the Schema to houses with colors, or cars with years, or friends with phone numbers and birthdays. The CRUD app is essential to you as a programmer, get real familiar with all of its parts. Another great tutorial on NodeJS basics is [Getting Started with Node](http://mherman.org/blog/2014/02/16/getting-started-with-node/#.Vil7IhCrRE4) by my friend Michael Herman. Check it out!
 
+#### Keywords/Concepts:
+* API
+* CRUD
+* REST
+* Schema
+* Relational Database
+* Type Casting
+* Routes
+* Response
+* Request
+* JSON
+* Status Code
+
 In PART 2 of this tutorial we will sync up the front end so that a user can use the browser to access all of our beautiful CRUD routes to create and manipulate data.
 
 Thanks for reading.
