@@ -1,11 +1,14 @@
-# NodeJS, Express, MongoDB Crud App 
+## CRUD App for Begginers
+### Node.js, Express, MongoDB
+
+
 ### Part 1
 
 **This tutorial tackles a vital programming fundamental - _CRUD_**.
 
-Nearly every single application on the web today creates and manipulates data as a core part of its functionality. My goal with this lesson is to get a beginner developer with a basic understanding of the command line, HTML, CSS, JavaScript and an interest in the MEAN stack to take a massive step towards professional coding. This is not going to address all aspects of server-side code, but it will shed some light project setup, routes and MongoDB.
+Nearly every single application on the web today creates and manipulates data as a core part of its functionality. My goal with this lesson is to get a beginner developer with a basic understanding of the command line, HTML, CSS, JavaScript and an interest in the MEAN stack to take a massive step towards professional coding. This is not going to address all aspects of server-side code, but it will shed some light on project setup, routes and MongoDB.
 
-I have set this project up with different git branches for the different sections. This means the code that appears in your editor will change depending on which branch you are on. To view a branch:
+I have set this project up with different git branches for the different sections. If you are new to git: this means the code that appears in your editor will change depending on which branch you are on. To view a branch:
 
 ```sh
 $git checkout <branch-name-here>
@@ -19,20 +22,21 @@ More on [git version control](https://www.atlassian.com/git/tutorials/setting-up
 
 ## Step 1 - Initial Project Structure 
 
-### NodeJS
+#### NodeJS
 
 Install [NodeJS](https://nodejs.org/en/).
 
 This will also install [NPM](https://docs.npmjs.com/getting-started/what-is-npm), which is an essential brick in your new path as a MEAN stack developer.
 
 Some key words related to this topic that you may want to look up:
-* package.json
-* dependencies
+
++ package.json
++ dependencies
 
 
 ### Express Generator
 
-We continue by installing the Express Generator via NPM. This will provide the basic project structure for our app. If this is your first web app, these files might be a little daunting. **Thats fine. 'Slowly but surely' should be your motto.** We will tackle some of the basics and leave some others for another time. 
+We continue by installing the Express Generator via NPM. This will provide the basic project structure for our app. If this is your first web app, these files might be a little daunting. **Thats fine. _'Slowly but surely'_ should be your motto.** We will tackle some of the basics and leave some others for another time. 
 
 ```sh
 $ npm install -g express generator
@@ -87,90 +91,6 @@ The project structure we just created looks like this:
 
 Get familiar with this layout as it is super common in web application development.
 
-### Refactor with Swig
-
-> branch: second-swig
-
-A 'templating language' provides a syntax for making more dynamic HTML pages. [Jade](http://jade-lang.com/) is a very common 'templating language' used with the MEAN stack. I prefer using [swig](http://paularmstrong.github.io/swig/) instead, a personal choice. Let's convert this app from 'jade' to 'swig':
-
-Add this to your *package.json* file:
-
-```
-'swig': '^1.4.2'
-```
-
-![swig dependency](./public/images/package.json-swig.png)
-
-/mongo-talk/public/images/packagejson-swig.png
-
-Run `npm install` to to install a 'package'. NPM knows to look for the *package.json* file, which was created for us in the express generator build. 
-
-In *app.js* remove:
-
-``` javascript
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-```
-
-And replace with:
-
-```javascript
-var swig = require('swig')
-
-var swig = new swig.Swig();
-app.engine('html', swig.renderFile);
-app.set('view engine', 'html');
-```
-
-This is the first look at the *app.js* file, the heart of our application. In here we set the basic behavior and make available the necessities needed to run the app. 
-
-In the **views** folder remove the all files and add: *layout.html* and *index.html*
-
-Cut and paste this code into the layout.html:
-
-``` html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>{{ title }}</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/main.css">
-  </head>
-  <body>
-    {% block content %}
-    {% endblock %}
-    <script type="text/javascript" src="//code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/js/main.js"></script>
-  </body>
-</html>
-```
-
-This the foundation of all of our HTML pages and we can include content from other HTML files using the 'swig' syntax.
-
-Next, cut and paste this into *index.html*:
-
-```html
-{% extends 'layout.html' %}
-
-{% block title %}{% endblock %}
-
-
-{% block content %}
-
-  <div class="container">
-
-    <h1>{{ title }}</h1>
-    <p>Welcome to {{ title }}</p>
-
-  </div>
-
-{% endblock %}
-```
-
-Look at the `{% extends 'layout.html' %}`. That is saying, "This code will be wrapped in the *layout.html* file". Don't be too concerned now with this, as our focus here is the server-side code of this CRUD app. Onward!
-
 In the terminal, in the root of the project directory (`mongo-crud`), run: 
 
 ```sh
@@ -179,9 +99,10 @@ $ npm start
 
 If everything is set up correctly you should see:
 
-![express default page](./public/images/express-default-page.png)
+![express default page](/content/images/2015/10/express-default-page.png)
 
-Those were all modifications dealing with how our page renders html files. We are now going to setup our app's database, MongoDB along with the Mongoose framework.
+We are now going to setup our app's database, MongoDB along with the Mongoose framework.
+
 
 ## Step 2 - MongoDB Set up
 
@@ -207,7 +128,7 @@ Keep thinking about local and global as you create more projects, it will become
 
 Let's look at the MongoDB through our terminal.
 
-In the command line, in a new window, type `sudo mongod`, then  enter your admin/computer password. This will start the MongoDB daemon. Now open another new window and type `mongo`. This is the command line interface (or REPL) for MongoDB. Enter the command `show dbs` to show any databases that you have created. If you are using mongo for the first time there will be nothing listed, which will change soon!
+In the command line, in a new window, type `sudo mongod`, then  enter your admin/computer password. This will start the MongoDB daemon. A _daemon_ is a program that runs in the background, without direct user interaction. Now open another new window and type `mongo`. This is the command line interface (or REPL) for MongoDB. Enter the command `show dbs` to show any databases that you have created. If you are using mongo for the first time there will be nothing listed, which will change soon!
 
 Next add a new file, *database.js* to the root directory add the following code:
 
@@ -392,7 +313,7 @@ Inside another function we handle the different possibilities - error, no data, 
 
 We are going to test this out with that 'httpie' we installed earlier. 'httpie' is a tool that allows us to test routes in the terminal. We test that our endpoints are being hit, examine what information we get back from different endpoints, as well as mock form submits and pass information. Remember, an 'endpoint' is the same thing as a 'route', it is the place where a path take us.
 
-In the terminal, in you projects root directory fire up the database using `sudo mongod`, and in another tab also in the project's root directory, fire up the server with `npm start`. In yet another tab run:
+In the terminal, in your projects root directory fire up the database using `sudo mongod`, and in another tab also in the project's root directory, fire up the server with `npm start`. In yet another tab run:
 
 ```sh
 $ http GET localhost:3000/items
@@ -400,7 +321,7 @@ $ http GET localhost:3000/items
 
 You should see this:
 
-![httpie GET no items](./public/images/httpie-get-no-items.png)
+![httpie GET no items](/content/images/2015/10/httpie-get-no-items.png)
 
 You can see in the second line `HTTP/1.1 200 OK`, which means our route was successful and that the logic in our route was executed. That is a huge thing. Congrats! If you don't see this, you have to comb over your code and retrace your steps. Compare your files with mine. You'll find the difference. Hopefully.
 
@@ -414,7 +335,7 @@ $ http GET localhost:3000/things
 
 You should see this: 
 
-![httpie GET 404](./public/images/httpie-get-404.png)
+![httpie GET 404](/content/images/2015/10/httpie-get-404.png)
 
 The important clue here is the '404'. We used a 'path' that was undefined, so there was nothing for the server to do with the browser's request. This is a 404 error. They are common in developing and tell you that you need to investigate your routes/paths.
 
@@ -451,6 +372,8 @@ The comments sum up what is going on in this route, but there are a few new thin
 
 Have a look at the `req.body`. 'req' stands for 'request'. It is an object sent by the browser with properties that we can access. We are grabbing the 'body' property and getting its values to instantiate our new Item.
 
+#### Test
+
 Now we will test this out with httpie in the terminal:
 
 ```sh
@@ -461,7 +384,7 @@ The '-f' declares that we are mocking a form submission. Then we pass keys set t
 
 You should see this:
 
-![httpie-post-200](./public/images/httpie-post-200.png)
+![httpie-post-200](/content/images/2015/10/httpie-post-200.png)
 
 
 Ok, awesome, we can create new Items. Let's now look a little closer at that json object that came back. It has a 'name' and 'type' property which we should expect. But it also has '_id' and '_v'. We won't worry about the latter in this tutorial, but I do want to look at the former.
@@ -489,10 +412,6 @@ router.put('/items/:id', function(req, res, next) {
 });
 ```
 
-You should see this:
-
-![httpie-put-200](./public/images/httpie-put-200.png)
-
 First off, we called `put` on our router object. This is just another word for update and it is the RESTful syntax for our CRUD app. 
 
 Look at the path that we defined for this route - `/items/:id`
@@ -503,6 +422,18 @@ The `:id` allows us to pass in a value with the URL and receive it on the server
 1. via the body (possibly in a form), `req.body`
 
 In this route we used both to get our update accomplished. There are many different ways to utilize this functionality and how you implement it will come down to the specific project needs.
+
+#### Test
+
+```javascript
+http -f PUT localhost:3000/items/56295ec30358896ec84451e name='car' type='vehicle'
+```
+
+Heads Up! Be sure to use the _id of your item as it will be different from mine.
+
+You should see this:
+
+![httpie-put-200](/content/images/2015/10/httpie-put-200-1.png)
 
 ### DELETE
 
@@ -527,13 +458,17 @@ router.delete('/items/:id', function(req, res, next) {
 
 Go through and add your own comments to this route identifying what each part does. If you get stuck, go back and look at the previous routes for clues.
 
+#### Test
+
+Sort out how to test this route in the command line. Look at the previous commands that we used for the other routes. 
+
 If all goes well you will see this:
 
-![httpie-delete-200](./public/images/httpie-delete-200.png)
+![httpie-delete-200](/content/images/2015/10/httpie-delete-200.png)
 
 ## Conclusion
 
-This completes the server-side code for our basic crud app. Wow, that was huge. Don't worry if you don't understand it all completely. Sleep on it. And do it again, as much from memory as possible. Maybe next time, depending on the outcome of the request/response, send custom messages back to the user. Change up the Schema to houses with colors, or cars with years, or friends with phone numbers and birthdays. The CRUD app is essential to you as a programmer, get real familiar with all of its parts. Another great tutorial on NodeJS basics is [Getting Started with Node](http://mherman.org/blog/2014/02/16/getting-started-with-node/#.Vil7IhCrRE4) by my friend Michael Herman. Check it out!
+This completes the server-side code for our basic crud app. **Wow, that was huge**. Don't worry if you don't understand it all completely. Sleep on it. And do it again, as much from memory as possible. Maybe next time, depending on the outcome of the request/response, send a custom messages back to the user. Change up the Schema to houses with colors, or cars with years, or friends with phone numbers and birthdays. The CRUD app is essential to you as a programmer, get really familiar with all of its parts. Another great tutorial on NodeJS basics is [Getting Started with Node](http://mherman.org/blog/2014/02/16/getting-started-with-node/#.Vil7IhCrRE4) by my friend Michael Herman. Check it out!
 
 #### Keywords/Concepts:
 * API
@@ -550,4 +485,4 @@ This completes the server-side code for our basic crud app. Wow, that was huge. 
 
 In PART 2 of this tutorial we will sync up the front end so that a user can use the browser to access all of our beautiful CRUD routes to create and manipulate data.
 
-Thanks for reading.
+Hit me up by email or on twitter with questions or comments. Thanks for reading. 
